@@ -123,35 +123,47 @@
       <div class="card clock" id="clock">00:00:00</div>
     </div>
   </div>
+<script>
+  const startTime = Date.now();
 
-  <script>
-    const startTime = Date.now();
+  function getDayFromJanuary() {
+    const now = new Date();
+    const startOfYear = new Date(now.getFullYear(), 0, 1); // 1 Januari
+    const diffTime = now - startOfYear;
+    const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return dayNumber;
+  }
 
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
 
-      const diff = Date.now() - startTime;
-      const hrs = Math.floor(diff / 3600000);
-      const mins = Math.floor((diff % 3600000) / 60000);
-      document.getElementById('uptime').textContent = `${hrs} hrs ${mins} min`;
-    }
+    document.getElementById('clock').textContent = `${h}:${m}:${s}`;
 
-    // Dummy sensor values
-    function updateSensors() {
-      document.getElementById('temp').textContent = `${(25 + Math.random()*2).toFixed(1)} °C`;
-      document.getElementById('kpa').textContent = `${(100 + Math.random()).toFixed(1)} kPa`;
-      document.getElementById('humidity').textContent = `${(60 + Math.random()*5).toFixed(0)} %`;
-      document.getElementById('co2').textContent = `${(400 + Math.random()*50).toFixed(0)} ppm`;
-    }
+    // Update Day dari 1 Januari
+    document.getElementById('day').textContent = `Day ${getDayFromJanuary()}`;
 
-    setInterval(updateClock, 1000);
-    setInterval(updateSensors, 3000);
-    updateClock();
-    updateSensors();
-  </script>
+    // Uptime
+    const diff = Date.now() - startTime;
+    const hrs = Math.floor(diff / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('uptime').textContent = `${hrs} hrs ${mins} min`;
+  }
+
+  function updateSensors() {
+    document.getElementById('temp').textContent = `${(25 + Math.random()*2).toFixed(1)} °C`;
+    document.getElementById('kpa').textContent = `${(100 + Math.random()).toFixed(1)} kPa`;
+    document.getElementById('humidity').textContent = `${(60 + Math.random()*5).toFixed(0)} %`;
+    document.getElementById('co2').textContent = `${(400 + Math.random()*50).toFixed(0)} ppm`;
+  }
+
+  setInterval(updateClock, 1000);
+  setInterval(updateSensors, 3000);
+  updateClock();
+  updateSensors();
+</script>
+  
 </body>
 </html>
