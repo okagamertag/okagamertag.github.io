@@ -1,39 +1,2129 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>OKASHOP - Jaringan Komputer</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-    <h1>OKASHOP</h1>
-    <p>Toko Perangkat Jaringan Komputer</p>
-</header>
-
-<section class="produk">
-    <h2>Produk Kami</h2>
-
-    <div class="card">
-        <h3>Router WiFi</h3>
-        <p>Router cepat untuk rumah & kantor</p>
-        <button>Beli Sekarang</button>
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetGear Tech — Instalasi Jaringan &amp; Perangkat Komputer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['Space Mono', 'monospace'],
+            body: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-root { height: 100%; overflow: auto; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
+    .fade-in { animation: fadeUp 0.6s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
+    }
+    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .badge-new {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+    }
+    .category-chip { transition: all 0.25s; cursor: pointer; }
+    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
+    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .qty-btn:hover { background: rgba(0,255,136,0.2); }
+    .cart-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+      border-radius: 999px;
+    }
+    .toast-msg {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
+      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; }
+    .cart-panel {
+      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
+      background: #111916; z-index: 100; transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+    }
+    .cart-panel.open { transform: translateX(0); }
+    .cart-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
+   <!-- Toast -->
+   <div class="toast-msg" id="toast">
+    ✓ Ditambahkan ke keranjang
+   </div><!-- Cart Overlay -->
+   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
+   <div class="cart-panel" id="cartPanel">
+    <div class="flex flex-col h-full">
+     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
+      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
+     </div>
+     <div class="flex-1 overflow-auto p-6" id="cartItems">
+      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
+     </div>
+     <div class="p-6 border-t border-[#1e2b24]">
+      <div class="flex justify-between mb-4">
+       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
+      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
+     </div>
     </div>
-
-    <div class="card">
-        <h3>Switch 8 Port</h3>
-        <p>Cocok untuk jaringan kecil</p>
-        <button>Beli Sekarang</button>
+   </div><!-- Navbar -->
+   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+     <a href="#hero" class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
+     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
+     </div>
+     <div class="flex items-center gap-3">
+      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
+     </div>
+    </div><!-- Mobile Menu -->
+    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
+     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
+     </div>
     </div>
-
-    <div class="card">
-        <h3>Kabel LAN</h3>
-        <p>Kabel berkualitas tinggi</p>
-        <button>Beli Sekarang</button>
+   </nav><!-- Hero -->
+   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
+    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
+    <div class="max-w-7xl mx-auto relative">
+     <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
+       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
+      </div>
+      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
+      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
+      <div class="flex flex-wrap gap-4 fade-in stagger-3">
+       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
+      </div>
+     </div><!-- Stats -->
+     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        500+
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Produk Tersedia
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        2.8K
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Pelanggan Puas
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        24/7
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Support Online
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        ⭐ 4.9
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Rating Toko
+       </div>
+      </div>
+     </div>
     </div>
+   </section><!-- Brand Marquee -->
+   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
+    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
+     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
+    </div>
+   </div><!-- Products -->
+   <section id="produk" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
+     </div><!-- Category Filter -->
+     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
+      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
+    </div>
+   </section><!-- Services -->
+   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 500.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 350.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 200.000
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Why Us -->
+   <section id="kenapa" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
+       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
+       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Jabodetabek.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
+       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
+       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian partai besar.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Contact -->
+   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
+     </div>
+     <div class="max-w-lg mx-auto">
+      <form id="contactForm" class="space-y-4">
+       <div>
+        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
+       </div>
+       <div>
+        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
+       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
+      </form>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
+       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl. Teknologi No. 42, Jakarta</span>
+       </div>
+       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0812-3456-7890</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
+     <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">NetGear Tech</span>
+     </div><span>© 2025 — Semua hak dilindungi.</span>
+    </div>
+   </footer>
+  </div>
+  <script>
+// ── Product Data ──
+const products = [
+  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
+  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
+  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
+  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
+  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
+  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
+  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
+  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
+  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
+  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
+  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
+  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
+];
 
-</section>
+let cart = [];
+let activeCategory = 'all';
 
-<footer>
-    <p>© 2026 OK
+const defaultConfig = {
+  store_name: 'okashop',
+  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
+  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
+  whatsapp_number: '6281234567890',
+  store_address: 'Jl. Teknologi No. 42, Jakarta',
+  background_color: '#0a0f0d',
+  surface_color: '#111916',
+  text_color: '#e8efe9',
+  primary_action_color: '#00ff88',
+  secondary_action_color: '#7a8f80',
+  font_family: 'Plus Jakarta Sans',
+  font_size: 16
+};
+
+function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
+      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
+        ${p.emoji}
+        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
+      </div>
+      <div class="p-5">
+        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
+        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
+        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
+        <div class="flex items-center justify-between">
+          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
+          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
+            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+function addToCart(pid) {
+  const existing = cart.find(c => c.id === pid);
+  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
+  updateCartUI();
+  showToast();
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
+  else { badge.classList.add('hidden'); }
+
+  const container = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
+  } else {
+    container.innerHTML = cart.map(c => {
+      const p = products.find(x => x.id === c.id);
+      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
+        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold truncate">${p.name}</div>
+          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
+          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
+          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  document.getElementById('cartTotal').textContent = fmt(total);
+  updateCheckoutLink();
+}
+
+function changeQty(pid, delta) {
+  const item = cart.find(c => c.id === pid);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
+  updateCartUI();
+}
+
+function toggleCart() {
+  document.getElementById('cartPanel').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+  lucide.createIcons();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+function getWaNumber() {
+  const cfg = window.elementSdk?.config;
+  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
+}
+
+function updateCheckoutLink() {
+  if (cart.length === 0) return;
+  let msg = '🛒 *Order dari NetGear Tech*\n\n';
+  cart.forEach(c => {
+    const p = products.find(x => x.id === c.id);
+    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
+  });
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
+  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
+}
+
+function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
+
+// Category filter
+document.getElementById('categoryFilters').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  activeCategory = btn.dataset.cat;
+  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+});
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('cf_name').value;
+  const msg = document.getElementById('cf_msg').value;
+  const text = `Halo, saya ${name}.\n\n${msg}`;
+  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
+});
+
+// ── Element SDK ──
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => {
+    const c = config;
+    const d = defaultConfig;
+    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
+    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
+    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
+
+    const font = c.font_family || d.font_family;
+    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
+
+    const size = c.font_size || d.font_size;
+    document.body.style.fontSize = size + 'px';
+  },
+  mapToCapabilities: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return {
+      recolorables: [
+        { get: () => c.background_color || d.background_color, set: v => { c.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => c.font_family || d.font_family,
+        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => c.font_size || d.font_size,
+        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    };
+  },
+  mapToEditPanelValues: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return new Map([
+      ['store_name', c.store_name || d.store_name],
+      ['hero_headline', c.hero_headline || d.hero_headline],
+      ['hero_subtext', c.hero_subtext || d.hero_subtext],
+      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
+      ['store_address', c.store_address || d.store_address],
+    ]);
+  }
+});
+
+// Init
+renderProducts();
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+           </html><!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetGear Tech — Instalasi Jaringan &amp; Perangkat Komputer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['Space Mono', 'monospace'],
+            body: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-root { height: 100%; overflow: auto; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
+    .fade-in { animation: fadeUp 0.6s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
+    }
+    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .badge-new {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+    }
+    .category-chip { transition: all 0.25s; cursor: pointer; }
+    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
+    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .qty-btn:hover { background: rgba(0,255,136,0.2); }
+    .cart-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+      border-radius: 999px;
+    }
+    .toast-msg {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
+      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; }
+    .cart-panel {
+      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
+      background: #111916; z-index: 100; transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+    }
+    .cart-panel.open { transform: translateX(0); }
+    .cart-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
+   <!-- Toast -->
+   <div class="toast-msg" id="toast">
+    ✓ Ditambahkan ke keranjang
+   </div><!-- Cart Overlay -->
+   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
+   <div class="cart-panel" id="cartPanel">
+    <div class="flex flex-col h-full">
+     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
+      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
+     </div>
+     <div class="flex-1 overflow-auto p-6" id="cartItems">
+      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
+     </div>
+     <div class="p-6 border-t border-[#1e2b24]">
+      <div class="flex justify-between mb-4">
+       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
+      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
+     </div>
+    </div>
+   </div><!-- Navbar -->
+   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+     <a href="#hero" class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
+     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
+     </div>
+     <div class="flex items-center gap-3">
+      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
+     </div>
+    </div><!-- Mobile Menu -->
+    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
+     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
+     </div>
+    </div>
+   </nav><!-- Hero -->
+   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
+    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
+    <div class="max-w-7xl mx-auto relative">
+     <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
+       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
+      </div>
+      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
+      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
+      <div class="flex flex-wrap gap-4 fade-in stagger-3">
+       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
+      </div>
+     </div><!-- Stats -->
+     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        500+
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Produk Tersedia
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        2.8K
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Pelanggan Puas
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        24/7
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Support Online
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        ⭐ 4.9
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Rating Toko
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Brand Marquee -->
+   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
+    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
+     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
+    </div>
+   </div><!-- Products -->
+   <section id="produk" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
+     </div><!-- Category Filter -->
+     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
+      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
+    </div>
+   </section><!-- Services -->
+   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 500.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 350.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 200.000
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Why Us -->
+   <section id="kenapa" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
+       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
+       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Jabodetabek.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
+       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
+       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian partai besar.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Contact -->
+   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
+     </div>
+     <div class="max-w-lg mx-auto">
+      <form id="contactForm" class="space-y-4">
+       <div>
+        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
+       </div>
+       <div>
+        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
+       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
+      </form>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
+       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl. Teknologi No. 42, Jakarta</span>
+       </div>
+       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0812-3456-7890</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
+     <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">NetGear Tech</span>
+     </div><span>© 2025 — Semua hak dilindungi.</span>
+    </div>
+   </footer>
+  </div>
+  <script>
+// ── Product Data ──
+const products = [
+  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
+  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
+  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
+  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
+  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
+  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
+  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
+  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
+  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
+  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
+  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
+  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
+];
+
+let cart = [];
+let activeCategory = 'all';
+
+const defaultConfig = {
+  store_name: 'okashop',
+  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
+  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
+  whatsapp_number: '6281234567890',
+  store_address: 'Jl. Teknologi No. 42, Jakarta',
+  background_color: '#0a0f0d',
+  surface_color: '#111916',
+  text_color: '#e8efe9',
+  primary_action_color: '#00ff88',
+  secondary_action_color: '#7a8f80',
+  font_family: 'Plus Jakarta Sans',
+  font_size: 16
+};
+
+function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
+      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
+        ${p.emoji}
+        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
+      </div>
+      <div class="p-5">
+        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
+        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
+        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
+        <div class="flex items-center justify-between">
+          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
+          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
+            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+function addToCart(pid) {
+  const existing = cart.find(c => c.id === pid);
+  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
+  updateCartUI();
+  showToast();
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
+  else { badge.classList.add('hidden'); }
+
+  const container = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
+  } else {
+    container.innerHTML = cart.map(c => {
+      const p = products.find(x => x.id === c.id);
+      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
+        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold truncate">${p.name}</div>
+          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
+          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
+          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  document.getElementById('cartTotal').textContent = fmt(total);
+  updateCheckoutLink();
+}
+
+function changeQty(pid, delta) {
+  const item = cart.find(c => c.id === pid);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
+  updateCartUI();
+}
+
+function toggleCart() {
+  document.getElementById('cartPanel').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+  lucide.createIcons();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+function getWaNumber() {
+  const cfg = window.elementSdk?.config;
+  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
+}
+
+function updateCheckoutLink() {
+  if (cart.length === 0) return;
+  let msg = '🛒 *Order dari NetGear Tech*\n\n';
+  cart.forEach(c => {
+    const p = products.find(x => x.id === c.id);
+    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
+  });
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
+  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
+}
+
+function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
+
+// Category filter
+document.getElementById('categoryFilters').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  activeCategory = btn.dataset.cat;
+  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+});
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('cf_name').value;
+  const msg = document.getElementById('cf_msg').value;
+  const text = `Halo, saya ${name}.\n\n${msg}`;
+  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
+});
+
+// ── Element SDK ──
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => {
+    const c = config;
+    const d = defaultConfig;
+    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
+    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
+    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
+
+    const font = c.font_family || d.font_family;
+    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
+
+    const size = c.font_size || d.font_size;
+    document.body.style.fontSize = size + 'px';
+  },
+  mapToCapabilities: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return {
+      recolorables: [
+        { get: () => c.background_color || d.background_color, set: v => { c<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetGear Tech — Instalasi Jaringan &amp; Perangkat Komputer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['Space Mono', 'monospace'],
+            body: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-root { height: 100%; overflow: auto; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
+    .fade-in { animation: fadeUp 0.6s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
+    }
+    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .badge-new {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+    }
+    .category-chip { transition: all 0.25s; cursor: pointer; }
+    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
+    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .qty-btn:hover { background: rgba(0,255,136,0.2); }
+    .cart-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+      border-radius: 999px;
+    }
+    .toast-msg {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
+      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; }
+    .cart-panel {
+      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
+      background: #111916; z-index: 100; transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+    }
+    .cart-panel.open { transform: translateX(0); }
+    .cart-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
+   <!-- Toast -->
+   <div class="toast-msg" id="toast">
+    ✓ Ditambahkan ke keranjang
+   </div><!-- Cart Overlay -->
+   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
+   <div class="cart-panel" id="cartPanel">
+    <div class="flex flex-col h-full">
+     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
+      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
+     </div>
+     <div class="flex-1 overflow-auto p-6" id="cartItems">
+      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
+     </div>
+     <div class="p-6 border-t border-[#1e2b24]">
+      <div class="flex justify-between mb-4">
+       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
+      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
+     </div>
+    </div>
+   </div><!-- Navbar -->
+   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+     <a href="#hero" class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
+     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
+     </div>
+     <div class="flex items-center gap-3">
+      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
+     </div>
+    </div><!-- Mobile Menu -->
+    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
+     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
+     </div>
+    </div>
+   </nav><!-- Hero -->
+   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
+    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
+    <div class="max-w-7xl mx-auto relative">
+     <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
+       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
+      </div>
+      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
+      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
+      <div class="flex flex-wrap gap-4 fade-in stagger-3">
+       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
+      </div>
+     </div><!-- Stats -->
+     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        500+
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Produk Tersedia
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        2.8K
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Pelanggan Puas
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        24/7
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Support Online
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        ⭐ 4.9
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Rating Toko
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Brand Marquee -->
+   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
+    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
+     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
+    </div>
+   </div><!-- Products -->
+   <section id="produk" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
+     </div><!-- Category Filter -->
+     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
+      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
+    </div>
+   </section><!-- Services -->
+   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 500.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 350.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 200.000
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Why Us -->
+   <section id="kenapa" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
+       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
+       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Jabodetabek.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
+       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
+       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian partai besar.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Contact -->
+   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
+     </div>
+     <div class="max-w-lg mx-auto">
+      <form id="contactForm" class="space-y-4">
+       <div>
+        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
+       </div>
+       <div>
+        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
+       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
+      </form>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
+       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl. Teknologi No. 42, Jakarta</span>
+       </div>
+       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0812-3456-7890</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
+     <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">NetGear Tech</span>
+     </div><span>© 2025 — Semua hak dilindungi.</span>
+    </div>
+   </footer>
+  </div>
+  <script>
+// ── Product Data ──
+const products = [
+  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
+  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
+  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
+  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
+  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
+  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
+  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
+  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
+  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
+  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
+  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
+  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
+];
+
+let cart = [];
+let activeCategory = 'all';
+
+const defaultConfig = {
+  store_name: 'okashop',
+  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
+  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
+  whatsapp_number: '6281234567890',
+  store_address: 'Jl. Teknologi No. 42, Jakarta',
+  background_color: '#0a0f0d',
+  surface_color: '#111916',
+  text_color: '#e8efe9',
+  primary_action_color: '#00ff88',
+  secondary_action_color: '#7a8f80',
+  font_family: 'Plus Jakarta Sans',
+  font_size: 16
+};
+
+function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
+      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
+        ${p.emoji}
+        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
+      </div>
+      <div class="p-5">
+        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
+        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
+        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
+        <div class="flex items-center justify-between">
+          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
+          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
+            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+function addToCart(pid) {
+  const existing = cart.find(c => c.id === pid);
+  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
+  updateCartUI();
+  showToast();
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
+  else { badge.classList.add('hidden'); }
+
+  const container = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
+  } else {
+    container.innerHTML = cart.map(c => {
+      const p = products.find(x => x.id === c.id);
+      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
+        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold truncate">${p.name}</div>
+          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
+          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
+          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  document.getElementById('cartTotal').textContent = fmt(total);
+  updateCheckoutLink();
+}
+
+function changeQty(pid, delta) {
+  const item = cart.find(c => c.id === pid);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
+  updateCartUI();
+}
+
+function toggleCart() {
+  document.getElementById('cartPanel').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+  lucide.createIcons();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+function getWaNumber() {
+  const cfg = window.elementSdk?.config;
+  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
+}
+
+function updateCheckoutLink() {
+  if (cart.length === 0) return;
+  let msg = '🛒 *Order dari NetGear Tech*\n\n';
+  cart.forEach(c => {
+    const p = products.find(x => x.id === c.id);
+    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
+  });
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
+  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
+}
+
+function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
+
+// Category filter
+document.getElementById('categoryFilters').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  activeCategory = btn.dataset.cat;
+  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+});
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('cf_name').value;
+  const msg = document.getElementById('cf_msg').value;
+  const text = `Halo, saya ${name}.\n\n${msg}`;
+  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
+});
+
+// ── Element SDK ──
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => {
+    const c = config;
+    const d = defaultConfig;
+    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
+    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
+    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
+
+    const font = c.font_family || d.font_family;
+    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
+
+    const size = c.font_size || d.font_size;
+    document.body.style.fontSize = size + 'px';
+  },
+  mapToCapabilities: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return {
+      recolorables: [
+        { get: () => c.background_color || d.background_color, set: v => { c.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => c.font_family || d.font_family,
+        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => c.font_size || d.font_size,
+        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    };
+  },
+  mapToEditPanelValues: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return new Map([
+      ['store_name', c.store_name || d.store_name],
+      ['hero_headline', c.hero_headline || d.hero_headline],
+      ['hero_subtext', c.hero_subtext || d.hero_subtext],
+      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
+      ['store_address', c.store_address || d.store_address],
+    ]);
+  }
+});
+
+// Init
+renderProducts();
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html><!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetGear Tech — Instalasi Jaringan &amp; Perangkat Komputer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['Space Mono', 'monospace'],
+            body: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-root { height: 100%; overflow: auto; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
+    .fade-in { animation: fadeUp 0.6s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
+    }
+    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .badge-new {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+    }
+    .category-chip { transition: all 0.25s; cursor: pointer; }
+    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
+    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .qty-btn:hover { background: rgba(0,255,136,0.2); }
+    .cart-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
+      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+      border-radius: 999px;
+    }
+    .toast-msg {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
+      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; }
+    .cart-panel {
+      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
+      background: #111916; z-index: 100; transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+    }
+    .cart-panel.open { transform: translateX(0); }
+    .cart-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
+   <!-- Toast -->
+   <div class="toast-msg" id="toast">
+    ✓ Ditambahkan ke keranjang
+   </div><!-- Cart Overlay -->
+   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
+   <div class="cart-panel" id="cartPanel">
+    <div class="flex flex-col h-full">
+     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
+      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
+     </div>
+     <div class="flex-1 overflow-auto p-6" id="cartItems">
+      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
+     </div>
+     <div class="p-6 border-t border-[#1e2b24]">
+      <div class="flex justify-between mb-4">
+       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
+      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
+     </div>
+    </div>
+   </div><!-- Navbar -->
+   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+     <a href="#hero" class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
+     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
+     </div>
+     <div class="flex items-center gap-3">
+      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
+     </div>
+    </div><!-- Mobile Menu -->
+    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
+     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
+      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
+     </div>
+    </div>
+   </nav><!-- Hero -->
+   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
+    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
+    <div class="max-w-7xl mx-auto relative">
+     <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
+       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
+      </div>
+      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
+      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
+      <div class="flex flex-wrap gap-4 fade-in stagger-3">
+       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
+      </div>
+     </div><!-- Stats -->
+     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        500+
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Produk Tersedia
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        2.8K
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Pelanggan Puas
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        24/7
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Support Online
+       </div>
+      </div>
+      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
+       <div class="font-mono font-bold text-2xl text-[#00ff88]">
+        ⭐ 4.9
+       </div>
+       <div class="text-[#7a8f80] text-xs mt-1">
+        Rating Toko
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Brand Marquee -->
+   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
+    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
+     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
+    </div>
+   </div><!-- Products -->
+   <section id="produk" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
+     </div><!-- Category Filter -->
+     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
+      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
+    </div>
+   </section><!-- Services -->
+   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 500.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 350.000
+       </div>
+      </div>
+      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
+       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
+        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
+       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
+       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
+        Mulai Rp 200.000
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Why Us -->
+   <section id="kenapa" class="py-20 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
+       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
+       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Jabodetabek.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
+       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
+      </div>
+      <div class="text-center p-6">
+       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
+        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
+       </div>
+       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
+       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian partai besar.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Contact -->
+   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
+      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
+     </div>
+     <div class="max-w-lg mx-auto">
+      <form id="contactForm" class="space-y-4">
+       <div>
+        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
+       </div>
+       <div>
+        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
+       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
+      </form>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
+       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl. Teknologi No. 42, Jakarta</span>
+       </div>
+       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0812-3456-7890</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
+     <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
+       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
+      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">NetGear Tech</span>
+     </div><span>© 2025 — Semua hak dilindungi.</span>
+    </div>
+   </footer>
+  </div>
+  <script>
+// ── Product Data ──
+const products = [
+  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
+  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
+  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
+  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
+  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
+  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
+  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
+  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
+  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
+  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
+  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
+  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
+];
+
+let cart = [];
+let activeCategory = 'all';
+
+const defaultConfig = {
+  store_name: 'okashop',
+  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
+  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
+  whatsapp_number: '6281234567890',
+  store_address: 'Jl. Teknologi No. 42, Jakarta',
+  background_color: '#0a0f0d',
+  surface_color: '#111916',
+  text_color: '#e8efe9',
+  primary_action_color: '#00ff88',
+  secondary_action_color: '#7a8f80',
+  font_family: 'Plus Jakarta Sans',
+  font_size: 16
+};
+
+function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
+      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
+        ${p.emoji}
+        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
+      </div>
+      <div class="p-5">
+        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
+        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
+        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
+        <div class="flex items-center justify-between">
+          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
+          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
+            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+function addToCart(pid) {
+  const existing = cart.find(c => c.id === pid);
+  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
+  updateCartUI();
+  showToast();
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
+  else { badge.classList.add('hidden'); }
+
+  const container = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
+  } else {
+    container.innerHTML = cart.map(c => {
+      const p = products.find(x => x.id === c.id);
+      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
+        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold truncate">${p.name}</div>
+          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
+          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
+          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  document.getElementById('cartTotal').textContent = fmt(total);
+  updateCheckoutLink();
+}
+
+function changeQty(pid, delta) {
+  const item = cart.find(c => c.id === pid);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
+  updateCartUI();
+}
+
+function toggleCart() {
+  document.getElementById('cartPanel').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+  lucide.createIcons();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+function getWaNumber() {
+  const cfg = window.elementSdk?.config;
+  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
+}
+
+function updateCheckoutLink() {
+  if (cart.length === 0) return;
+  let msg = '🛒 *Order dari NetGear Tech*\n\n';
+  cart.forEach(c => {
+    const p = products.find(x => x.id === c.id);
+    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
+  });
+  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
+  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
+  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
+}
+
+function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
+
+// Category filter
+document.getElementById('categoryFilters').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  activeCategory = btn.dataset.cat;
+  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+});
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('cf_name').value;
+  const msg = document.getElementById('cf_msg').value;
+  const text = `Halo, saya ${name}.\n\n${msg}`;
+  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
+});
+
+// ── Element SDK ──
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => {
+    const c = config;
+    const d = defaultConfig;
+    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
+    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
+    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
+    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
+
+    const font = c.font_family || d.font_family;
+    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
+
+    const size = c.font_size || d.font_size;
+    document.body.style.fontSize = size + 'px';
+  },
+  mapToCapabilities: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return {
+      recolorables: [
+        { get: () => c.background_color || d.background_color, set: v => { c.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => c.font_family || d.font_family,
+        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => c.font_size || d.font_size,
+        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    };
+  },
+  mapToEditPanelValues: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return new Map([
+      ['store_name', c.store_name || d.store_name],
+      ['hero_headline', c.hero_headline || d.hero_headline],
+      ['hero_subtext', c.hero_subtext || d.hero_subtext],
+      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
+      ['store_address', c.store_address || d.store_address],
+    ]);
+  }
+});
+
+// Init
+renderProducts();
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => c.font_family || d.font_family,
+        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => c.font_size || d.font_size,
+        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    };
+  },
+  mapToEditPanelValues: (config) => {
+    const c = config;
+    const d = defaultConfig;
+    return new Map([
+      ['store_name', c.store_name || d.store_name],
+      ['hero_headline', c.hero_headline || d.hero_headline],
+      ['hero_subtext', c.hero_subtext || d.hero_subtext],
+      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
+      ['store_address', c.store_address || d.store_address],
+    ]);
+  }
+});
+
+// Init
+renderProducts();
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
