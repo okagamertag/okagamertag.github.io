@@ -1,2130 +1,289 @@
 <!doctype html>
-<html lang="id" class="h-full">
- <head>
+<html lang="id">
+<head>
+
+</head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TokoOkaTech — Instalasi Jaringan &amp; Perangkat Komputer</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <title>OkaShop Tech</title>
+  <link rel="stylesheet" href="style.css">
+  </div>
+</section>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          colors: {
+            neon: '#39FF14',
+            dark: '#10200f'
+          },
           fontFamily: {
-            mono: ['Space Mono', 'monospace'],
-            body: ['Plus Jakarta Sans', 'sans-serif']
+            outfit: ['Outfit']
           }
         }
       }
     }
   </script>
+
   <style>
-    html, body { height: 100%; margin: 0; }
-    .app-root { height: 100%; overflow: auto; }
-    .grid-bg {
-      background-image:
-        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
-    .fade-in { animation: fadeUp 0.6s ease both; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-    .stagger-6 { animation-delay: 0.6s; }
-    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
-      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
-    }
-    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-    .badge-new {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
-    }
-    .category-chip { transition: all 0.25s; cursor: pointer; }
-    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
-    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .qty-btn:hover { background: rgba(0,255,136,0.2); }
-    .cart-badge {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
-      border-radius: 999px;
-    }
-    .toast-msg {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
-      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-    }
-    .toast-msg.show { opacity: 1; }
-    .cart-panel {
-      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
-      background: #111916; z-index: 100; transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
-    }
-    .cart-panel.open { transform: translateX(0); }
-    .cart-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    }
-    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+    body { font-family: 'Outfit', sans-serif; }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
-   <!-- Toast -->
-   <div class="toast-msg" id="toast">
-    ✓ Ditambahkan ke keranjang
-   </div><!-- Cart Overlay -->
-   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
-   <div class="cart-panel" id="cartPanel">
-    <div class="flex flex-col h-full">
-     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
-      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
-     </div>
-     <div class="flex-1 overflow-auto p-6" id="cartItems">
-      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
-     </div>
-     <div class="p-6 border-t border-[#1e2b24]">
-      <div class="flex justify-between mb-4">
-       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
-      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
-     </div>
-    </div>
-   </div><!-- Navbar -->
-   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-     <a href="#hero" class="flex items-center gap-2">
-      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
-     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
-     </div>
-     <div class="flex items-center gap-3">
-      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
-     </div>
-    </div><!-- Mobile Menu -->
-    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
-     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
-     </div>
-    </div>
-   </nav><!-- Hero -->
-   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
-    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
-    <div class="max-w-7xl mx-auto relative">
-     <div class="max-w-3xl">
-      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
-       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
-      </div>
-      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
-      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
-      <div class="flex flex-wrap gap-4 fade-in stagger-3">
-       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
-      </div>
-     </div><!-- Stats -->
-     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        500+
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Produk Tersedia
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        2.8K
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Pelanggan Puas
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        24/7
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Support Online
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        ⭐ 4.9
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Rating Toko
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Brand Marquee -->
-   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
-    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
-     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
-    </div>
-   </div><!-- Products -->
-   <section id="produk" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
-     </div><!-- Category Filter -->
-     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
-      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
-    </div>
-   </section><!-- Services -->
-   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
-     </div>
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 500.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 350.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 200.000
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Why Us -->
-   <section id="kenapa" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
-       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
-       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Bali.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
-       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
-       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian banyak.</p>
-      </div>
-     </div>
-    </div>
-   </section><!-- Contact -->
-   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
-     </div>
-     <div class="max-w-lg mx-auto">
-      <form id="contactForm" class="space-y-4">
-       <div>
-        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
-       </div>
-       <div>
-        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
-       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
-      </form>
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
-       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl.Desa batungsel, pupuan, tabanan bali.</span>
-       </div>
-       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0881011880391</span>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Footer -->
-   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
-     <div class="flex items-center gap-2">
-      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">OkaShop Tech</span>
-     </div><span>© 2025 — Semua hak dilindungi.</span>
-    </div>
-   </footer>
+</head>
+
+<body class="bg-black text-white">
+
+<!-- NAVBAR -->
+<header class="sticky top-0 bg-black border-b border-gray-800 z-50">
+  <div class="max-w-6xl mx-auto flex justify-between items-center px-4 py-4">
+    <h1 class="text-xl font-bold text-neon">OkaShop Tech</h1>
+    <nav class="hidden md:flex gap-6 text-gray-300">
+      <a href="#home" class="hover:text-neon">Home</a>
+      <a href="#produk" class="hover:text-neon">Produk</a>
+      <a href="#kontak" class="hover:text-neon">Kontak</a>
+    </nav>
   </div>
-  <script>
-// ── Product Data ──
-const products = [
-  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
-  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
-  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
-  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
-  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
-  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
-  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
-  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
-  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
-  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
-  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
-  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
- {id:12, name:"Cctv Ezvis", cat :"aktif", prince:450000, unit" ",emoji: "📷", isNew:false, desc:"2mp camera night vision" },
-];
+</header>
 
-let cart = [];
-let activeCategory = 'all';
+<!-- HERO -->
+<section id="home" class="text-center py-20">
+  <h1 class="text-4xl md:text-5xl font-bold mb-4">
+    Solusi Jaringan & Komputer
+  </h1>
+  <p class="text-gray-400 mb-6">
+    Jual perangkat jaringan & layanan IT terbaik
+  </p>
+  <a href="#produk" class="bg-neon text-black px-6 py-3 rounded-full font-semibold">
+    Lihat Produk
+  </a>
+</section>
+<!-- TENTANG TOKO -->
+<section id="about" class="py-16 bg-black">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRsrwlOaqnTQ5fhhYvMI9QsAGTw7v7GVnJTw&s" 
+             class="w-full h-40 object-cover rounded-lg mb-3">
+    
+    <h2 class="text-3xl font-bold mb-4 text-neon">Tentang OkaShop Tech</h2>
+    
+    <p class="text-gray-400 leading-relaxed">
+      OkaShop Tech adalah toko yang menyediakan berbagai perangkat jaringan, komputer, dan layanan IT profesional. 
+      Kami melayani kebutuhan rumah, kantor, hingga bisnis dengan produk berkualitas dan harga terjangkau.
+    </p>
 
-const defaultConfig = {
-  store_name: 'okashop',
-  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
-  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
-  whatsapp_number: '6281234567890',
-  store_address: 'Jl. Teknologi No. 42, Jakarta',
-  background_color: '#0a0f0d',
-  surface_color: '#111916',
-  text_color: '#e8efe9',
-  primary_action_color: '#00ff88',
-  secondary_action_color: '#7a8f80',
-  font_family: 'Plus Jakarta Sans',
-  font_size: 16
-};
+    <p class="text-gray-400 mt-4 leading-relaxed">
+      Selain penjualan perangkat, kami juga menyediakan layanan instalasi jaringan, pemasangan CCTV, 
+      serta perbaikan komputer dengan teknisi berpengalaman.
 
-function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+      ❗NAMUN SEBELUM ANDA MEMESAN SEBAIKNYA HUBUNGI KAMI UNTUK MEMASTIAKAN KETERSEDIAN PRODUK
+      TERIMAKASIH😊
+      
+    </p>
 
-function renderProducts() {
-  const grid = document.getElementById('productGrid');
-  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
-  grid.innerHTML = filtered.map((p, i) => `
-    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
-      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
-        ${p.emoji}
-        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
-      </div>
-      <div class="p-5">
-        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
-        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
-        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
-        <div class="flex items-center justify-between">
-          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
-          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
-            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  lucide.createIcons();
-}
-
-function addToCart(pid) {
-  const existing = cart.find(c => c.id === pid);
-  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
-  updateCartUI();
-  showToast();
-}
-
-function updateCartUI() {
-  const badge = document.getElementById('cartBadge');
-  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
-  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
-  else { badge.classList.add('hidden'); }
-
-  const container = document.getElementById('cartItems');
-  if (cart.length === 0) {
-    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
-  } else {
-    container.innerHTML = cart.map(c => {
-      const p = products.find(x => x.id === c.id);
-      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
-        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-bold truncate">${p.name}</div>
-          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
-        </div>
-        <div class="flex items-center gap-1">
-          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
-          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
-          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  document.getElementById('cartTotal').textContent = fmt(total);
-  updateCheckoutLink();
-}
-
-function changeQty(pid, delta) {
-  const item = cart.find(c => c.id === pid);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
-  updateCartUI();
-}
-
-function toggleCart() {
-  document.getElementById('cartPanel').classList.toggle('open');
-  document.getElementById('cartOverlay').classList.toggle('open');
-  lucide.createIcons();
-}
-
-function showToast() {
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1500);
-}
-
-function getWaNumber() {
-  const cfg = window.elementSdk?.config;
-  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
-}
-
-function updateCheckoutLink() {
-  if (cart.length === 0) return;
-  let msg = '🛒 *Order dari NetGear Tech*\n\n';
-  cart.forEach(c => {
-    const p = products.find(x => x.id === c.id);
-    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
-  });
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
-  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
-}
-
-function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
-function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
-
-// Category filter
-document.getElementById('categoryFilters').addEventListener('click', e => {
-  const btn = e.target.closest('[data-cat]');
-  if (!btn) return;
-  activeCategory = btn.dataset.cat;
-  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts();
-});
-
-// Contact form
-document.getElementById('contactForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const name = document.getElementById('cf_name').value;
-  const msg = document.getElementById('cf_msg').value;
-  const text = `Halo, saya ${name}.\n\n${msg}`;
-  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
-});
-
-// ── Element SDK ──
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => {
-    const c = config;
-    const d = defaultConfig;
-    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
-    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
-    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
-
-    const font = c.font_family || d.font_family;
-    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
-
-    const size = c.font_size || d.font_size;
-    document.body.style.fontSize = size + 'px';
-  },
-  mapToCapabilities: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return {
-      recolorables: [
-        { get: () => c.background_color || d.background_color, set: v => { c.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => c.font_family || d.font_family,
-        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-      },
-      fontSizeable: {
-        get: () => c.font_size || d.font_size,
-        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-      }
-    };
-  },
-  mapToEditPanelValues: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return new Map([
-      ['store_name', c.store_name || d.store_name],
-      ['hero_headline', c.hero_headline || d.hero_headline],
-      ['hero_subtext', c.hero_subtext || d.hero_subtext],
-      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
-      ['store_address', c.store_address || d.store_address],
-    ]);
-  }
-});
-
-// Init
-renderProducts();
-lucide.createIcons();
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-           </html><!doctype html>
-<html lang="id" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NetGear Tech — Instalasi Jaringan &amp; Perangkat Komputer</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            mono: ['Space Mono', 'monospace'],
-            body: ['Plus Jakarta Sans', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    html, body { height: 100%; margin: 0; }
-    .app-root { height: 100%; overflow: auto; }
-    .grid-bg {
-      background-image:
-        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
-    .fade-in { animation: fadeUp 0.6s ease both; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-    .stagger-6 { animation-delay: 0.6s; }
-    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
-      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
-    }
-    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-    .badge-new {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
-    }
-    .category-chip { transition: all 0.25s; cursor: pointer; }
-    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
-    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .qty-btn:hover { background: rgba(0,255,136,0.2); }
-    .cart-badge {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
-      border-radius: 999px;
-    }
-    .toast-msg {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
-      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-    }
-    .toast-msg.show { opacity: 1; }
-    .cart-panel {
-      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
-      background: #111916; z-index: 100; transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
-    }
-    .cart-panel.open { transform: translateX(0); }
-    .cart-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    }
-    .cart-overlay.open { opacity: 1; pointer-events: auto; }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
-   <!-- Toast -->
-   <div class="toast-msg" id="toast">
-    ✓ Ditambahkan ke keranjang
-   </div><!-- Cart Overlay -->
-   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
-   <div class="cart-panel" id="cartPanel">
-    <div class="flex flex-col h-full">
-     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
-      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
-     </div>
-     <div class="flex-1 overflow-auto p-6" id="cartItems">
-      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
-     </div>
-     <div class="p-6 border-t border-[#1e2b24]">
-      <div class="flex justify-between mb-4">
-       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
-      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
-     </div>
-    </div>
-   </div><!-- Navbar -->
-   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-     <a href="#hero" class="flex items-center gap-2">
-      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
-     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
-     </div>
-     <div class="flex items-center gap-3">
-      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
-     </div>
-    </div><!-- Mobile Menu -->
-    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
-     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
-     </div>
-    </div>
-   </nav><!-- Hero -->
-   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
-    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
-    <div class="max-w-7xl mx-auto relative">
-     <div class="max-w-3xl">
-      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
-       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
-      </div>
-      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
-      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
-      <div class="flex flex-wrap gap-4 fade-in stagger-3">
-       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
-      </div>
-     </div><!-- Stats -->
-     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        500+
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Produk Tersedia
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        2.8K
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Pelanggan Puas
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        24/7
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Support Online
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        ⭐ 4.9
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Rating Toko
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Brand Marquee -->
-   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
-    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
-     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
-    </div>
-   </div><!-- Products -->
-   <section id="produk" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
-     </div><!-- Category Filter -->
-     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
-      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
-    </div>
-   </section><!-- Services -->
-   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
-     </div>
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 500.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 350.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 200.000
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Why Us -->
-   <section id="kenapa" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
-       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
-       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Jabodetabek.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
-       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
-       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian partai besar.</p>
-      </div>
-     </div>
-    </div>
-   </section><!-- Contact -->
-   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
-     </div>
-     <div class="max-w-lg mx-auto">
-      <form id="contactForm" class="space-y-4">
-       <div>
-        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
-       </div>
-       <div>
-        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
-       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
-      </form>
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
-       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl. Teknologi No. 42, Jakarta</span>
-       </div>
-       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0812-3456-7890</span>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Footer -->
-   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
-     <div class="flex items-center gap-2">
-      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">NetGear Tech</span>
-     </div><span>© 2025 — Semua hak dilindungi.</span>
-    </div>
-   </footer>
   </div>
-  <script>
-// ── Product Data ──
-const products = [
-  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
-  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
-  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
-  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
-  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
-  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
-  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
-  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
-  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
-  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
-  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
-  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
-];
+</section>
 
-let cart = [];
-let activeCategory = 'all';
+<!-- PRODUK -->
+<section id="produk" class="py-16 bg-[#111]">
+  <div class="max-w-6xl mx-auto px-4">
 
-const defaultConfig = {
-  store_name: 'okashop',
-  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
-  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
-  whatsapp_number: '6281234567890',
-  store_address: 'Jl. Teknologi No. 42, Jakarta',
-  background_color: '#0a0f0d',
-  surface_color: '#111916',
-  text_color: '#e8efe9',
-  primary_action_color: '#00ff88',
-  secondary_action_color: '#7a8f80',
-  font_family: 'Plus Jakarta Sans',
-  font_size: 16
-};
+    <h2 class="text-3xl font-bold text-center mb-10">Produk Kami</h2>
 
-function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-function renderProducts() {
-  const grid = document.getElementById('productGrid');
-  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
-  grid.innerHTML = filtered.map((p, i) => `
-    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
-      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
-        ${p.emoji}
-        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
-      </div>
-      <div class="p-5">
-        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
-        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
-        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
-        <div class="flex items-center justify-between">
-          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
-          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
-            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
-          </button>
+      <!-- Produk 1 -->
+      <div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+        <img src="https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQprIKwByZkWv8Zyd3SBasVM3VPsqH-ssYaQ242hSvhsH7VDZ-Z3AmvcXtd9LTPcq-z8jC1RX2ZdKcMjNe5XOacDbT3Gy40&usqp=CAc"
+             class="w-full h-40 object-cover rounded-lg mb-3">
+        <h3 class="font-semibold">Modem WiFi Advan</h3>
+        <p class="text-gray-400 text-sm">🛜ADVAN CPE ROUTER V6 bisa di hubungkan sebanyak 64 pengguna, 32 pengguna pada frekuensi 2.4 Ghz dan 32 pengguna pada frekuensi 5Ghz.
+📌SPESIFIKASI :
+● Chipset   : UNISOC SL8563
+● LTE standard  : LTE CAT6  300 Mbps(DL)/50 Mbps(UL)
+● Indictors  : 1. Power
+  2. Wi-Fi Switch (Used on WPS)
+  3. 4G/3G/2G Internet
+  4. Signal Strength (5 bars)
+● Buttons   : 1. Wi-Fi Button
+  2. WPS Button
+  3. Reset Key</p>
+
+        <div class="flex justify-between mt-3">
+          <span class="text-neon font-bold">Rp 850.000</span>
+          <a href="https://wa.me/62881011880391" 
+   class="bg-neon text-black px-3 py-1 rounded inline-block">
+   Beli
+</a>
+      
         </div>
       </div>
-    </div>
-  `).join('');
-  lucide.createIcons();
-}
+<div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+  <img src="data:image/jpeg;base64,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" class="w-full h-40 object-cover rounded-lg mb-3">
+  <h3 class="font-semibold">CCTV EZVIZ</h3>
+  <p class="text-gray-400 text-sm">
+    🎦EZVIZ 2MP Smart WiFi Camera...
+    Night vision Camera
+   Night Vision: Hingga 30 meter (infrared)
+Two-Way Audio: Bisa bicara & dengar dari aplikasi
+Motion Detection: Notifikasi otomatis ke HP
+micro sd penyimpanan
+  </p>
 
-function addToCart(pid) {
-  const existing = cart.find(c => c.id === pid);
-  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
-  updateCartUI();
-  showToast();
-}
-
-function updateCartUI() {
-  const badge = document.getElementById('cartBadge');
-  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
-  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
-  else { badge.classList.add('hidden'); }
-
-  const container = document.getElementById('cartItems');
-  if (cart.length === 0) {
-    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
-  } else {
-    container.innerHTML = cart.map(c => {
-      const p = products.find(x => x.id === c.id);
-      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
-        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-bold truncate">${p.name}</div>
-          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
-        </div>
-        <div class="flex items-center gap-1">
-          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
-          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
-          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  document.getElementById('cartTotal').textContent = fmt(total);
-  updateCheckoutLink();
-}
-
-function changeQty(pid, delta) {
-  const item = cart.find(c => c.id === pid);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
-  updateCartUI();
-}
-
-function toggleCart() {
-  document.getElementById('cartPanel').classList.toggle('open');
-  document.getElementById('cartOverlay').classList.toggle('open');
-  lucide.createIcons();
-}
-
-function showToast() {
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1500);
-}
-
-function getWaNumber() {
-  const cfg = window.elementSdk?.config;
-  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
-}
-
-function updateCheckoutLink() {
-  if (cart.length === 0) return;
-  let msg = '🛒 *Order dari NetGear Tech*\n\n';
-  cart.forEach(c => {
-    const p = products.find(x => x.id === c.id);
-    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
-  });
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
-  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
-}
-
-function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
-function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
-
-// Category filter
-document.getElementById('categoryFilters').addEventListener('click', e => {
-  const btn = e.target.closest('[data-cat]');
-  if (!btn) return;
-  activeCategory = btn.dataset.cat;
-  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts();
-});
-
-// Contact form
-document.getElementById('contactForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const name = document.getElementById('cf_name').value;
-  const msg = document.getElementById('cf_msg').value;
-  const text = `Halo, saya ${name}.\n\n${msg}`;
-  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
-});
-
-// ── Element SDK ──
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => {
-    const c = config;
-    const d = defaultConfig;
-    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
-    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
-    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
-
-    const font = c.font_family || d.font_family;
-    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
-
-    const size = c.font_size || d.font_size;
-    document.body.style.fontSize = size + 'px';
-  },
-  mapToCapabilities: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return {
-      recolorables: [
-        { get: () => c.background_color || d.background_color, set: v => { c<!doctype html>
-<html lang="id" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NetGear Tech — Instalasi Jaringan &amp; Perangkat Komputer</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            mono: ['Space Mono', 'monospace'],
-            body: ['Plus Jakarta Sans', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    html, body { height: 100%; margin: 0; }
-    .app-root { height: 100%; overflow: auto; }
-    .grid-bg {
-      background-image:
-        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
-    .fade-in { animation: fadeUp 0.6s ease both; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-    .stagger-6 { animation-delay: 0.6s; }
-    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
-      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
-    }
-    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-    .badge-new {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
-    }
-    .category-chip { transition: all 0.25s; cursor: pointer; }
-    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
-    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .qty-btn:hover { background: rgba(0,255,136,0.2); }
-    .cart-badge {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
-      border-radius: 999px;
-    }
-    .toast-msg {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
-      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-    }
-    .toast-msg.show { opacity: 1; }
-    .cart-panel {
-      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
-      background: #111916; z-index: 100; transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
-    }
-    .cart-panel.open { transform: translateX(0); }
-    .cart-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    }
-    .cart-overlay.open { opacity: 1; pointer-events: auto; }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
-   <!-- Toast -->
-   <div class="toast-msg" id="toast">
-    ✓ Ditambahkan ke keranjang
-   </div><!-- Cart Overlay -->
-   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
-   <div class="cart-panel" id="cartPanel">
-    <div class="flex flex-col h-full">
-     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
-      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
-     </div>
-     <div class="flex-1 overflow-auto p-6" id="cartItems">
-      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
-     </div>
-     <div class="p-6 border-t border-[#1e2b24]">
-      <div class="flex justify-between mb-4">
-       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
-      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
-     </div>
-    </div>
-   </div><!-- Navbar -->
-   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-     <a href="#hero" class="flex items-center gap-2">
-      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
-     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
-     </div>
-     <div class="flex items-center gap-3">
-      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
-     </div>
-    </div><!-- Mobile Menu -->
-    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
-     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
-     </div>
-    </div>
-   </nav><!-- Hero -->
-   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
-    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
-    <div class="max-w-7xl mx-auto relative">
-     <div class="max-w-3xl">
-      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
-       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
-      </div>
-      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
-      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
-      <div class="flex flex-wrap gap-4 fade-in stagger-3">
-       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
-      </div>
-     </div><!-- Stats -->
-     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        500+
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Produk Tersedia
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        2.8K
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Pelanggan Puas
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        24/7
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Support Online
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        ⭐ 4.9
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Rating Toko
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Brand Marquee -->
-   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
-    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
-     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
-    </div>
-   </div><!-- Products -->
-   <section id="produk" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
-     </div><!-- Category Filter -->
-     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
-      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
-    </div>
-   </section><!-- Services -->
-   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
-     </div>
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 500.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 350.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 200.000
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Why Us -->
-   <section id="kenapa" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
-       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
-       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Jabodetabek.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
-       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
-       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian partai besar.</p>
-      </div>
-     </div>
-    </div>
-   </section><!-- Contact -->
-   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
-     </div>
-     <div class="max-w-lg mx-auto">
-      <form id="contactForm" class="space-y-4">
-       <div>
-        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
-       </div>
-       <div>
-        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
-       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
-      </form>
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
-       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl. Teknologi No. 42, Jakarta</span>
-       </div>
-       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0812-3456-7890</span>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Footer -->
-   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
-     <div class="flex items-center gap-2">
-      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">NetGear Tech</span>
-     </div><span>© 2025 — Semua hak dilindungi.</span>
-    </div>
-   </footer>
+  <div class="flex justify-between mt-3">
+    <span class="text-neon font-bold">Rp 450.000</span>
+    <a href="https://wa.me/62881011880391" 
+       class="bg-neon text-black px-3 py-1 rounded inline-block">
+       Beli
+    </a>
   </div>
-  <script>
-// ── Product Data ──
-const products = [
-  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
-  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
-  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
-  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
-  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
-  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
-  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
-  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
-  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
-  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
-  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
-  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
-];
+</div>
+      <!-- Produk 3 -->
+      <div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+        <img src="data:image/webp;base64,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"
+            class="w-full h-40 object-cover rounded-lg mb-3"> 
+        <h3 class="font-semibold">Switch 8 Port</h3>
+        <p class="text-gray-400 text-sm">📟witch Hub MERCUSYS MS108G 8-Port Gigabit 10/100/1000Mbps
+  📌          
+Model: MS108G
+Warna: hitam
+Tipe Sakelar: Tidak Terkelola
+Beralih Faktor Bentuk: Desktop
+Didukung PoE: Tidak
+Kecepatan Port LAN: 10/100/1000
+Jumlah Port LAN: 8
+Didukung PoE+: Tidak
+Dimensi: 127 x 60,3 x 22 mm
+8 port RJ45 negosiasi otomatis 10/100/1.000 Mbps dengan dukungan MDI / MDIX otomatis
+</p>
 
-let cart = [];
-let activeCategory = 'all';
-
-const defaultConfig = {
-  store_name: 'okashop',
-  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
-  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
-  whatsapp_number: '6281234567890',
-  store_address: 'Jl. Teknologi No. 42, Jakarta',
-  background_color: '#0a0f0d',
-  surface_color: '#111916',
-  text_color: '#e8efe9',
-  primary_action_color: '#00ff88',
-  secondary_action_color: '#7a8f80',
-  font_family: 'Plus Jakarta Sans',
-  font_size: 16
-};
-
-function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
-
-function renderProducts() {
-  const grid = document.getElementById('productGrid');
-  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
-  grid.innerHTML = filtered.map((p, i) => `
-    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
-      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
-        ${p.emoji}
-        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
-      </div>
-      <div class="p-5">
-        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
-        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
-        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
-        <div class="flex items-center justify-between">
-          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
-          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
-            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
-          </button>
+        <div class="flex justify-between mt-3">
+          <span class="text-neon font-bold">Rp 320.000</span>
+          <a href="https://wa.me/62881011880391" 
+   class="bg-neon text-black px-3 py-1 rounded inline-block">
+   Beli
+</a>
         </div>
       </div>
+
+      <!-- Produk 4 -->
+      <div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+        <img src="data:image/jpeg;base64,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"
+             class="w-full h-40 object-cover rounded-lg mb-3">
+        <h3 class="font-semibold">PC Gaming</h3>
+        <p class="text-gray-400 text-sm">💻PC GAMING RTX 4060
+  📌SPESIFIKASI           BEST VALUE (Paling Seimbang)
+Cocok untuk gaming berat seperti GTA V, Warzone, Cyberpunk
+CPU: Intel Core i5 12400F / Ryzen 5 5600
+GPU: RTX 4060 8GB
+RAM: 16GB DDR4 / DDR5
+Storage: SSD NVMe 512GB
+Motherboard: B660 (Intel) / B550 (AMD)
+PSU: 550W – 650W 80+ Bronze
+Casing: Airflow bagus + 3 fan
+ Performa</p>
+
+        <div class="flex justify-between mt-3">
+          <span class="text-neon font-bold">Rp 12.500.000</span>
+         <a href="https://wa.me/62881011880391" 
+   class="bg-neon text-black px-3 py-1 rounded inline-block">
+   Beli
+</a>
     </div>
-  `).join('');
-  lucide.createIcons();
-}
-
-function addToCart(pid) {
-  const existing = cart.find(c => c.id === pid);
-  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
-  updateCartUI();
-  showToast();
-}
-
-function updateCartUI() {
-  const badge = document.getElementById('cartBadge');
-  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
-  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
-  else { badge.classList.add('hidden'); }
-
-  const container = document.getElementById('cartItems');
-  if (cart.length === 0) {
-    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
-  } else {
-    container.innerHTML = cart.map(c => {
-      const p = products.find(x => x.id === c.id);
-      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
-        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-bold truncate">${p.name}</div>
-          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
-        </div>
-        <div class="flex items-center gap-1">
-          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
-          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
-          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  document.getElementById('cartTotal').textContent = fmt(total);
-  updateCheckoutLink();
-}
-
-function changeQty(pid, delta) {
-  const item = cart.find(c => c.id === pid);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
-  updateCartUI();
-}
-
-function toggleCart() {
-  document.getElementById('cartPanel').classList.toggle('open');
-  document.getElementById('cartOverlay').classList.toggle('open');
-  lucide.createIcons();
-}
-
-function showToast() {
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1500);
-}
-
-function getWaNumber() {
-  const cfg = window.elementSdk?.config;
-  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
-}
-
-function updateCheckoutLink() {
-  if (cart.length === 0) return;
-  let msg = '🛒 *Order dari NetGear Tech*\n\n';
-  cart.forEach(c => {
-    const p = products.find(x => x.id === c.id);
-    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
-  });
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
-  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
-}
-
-function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
-function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
-
-// Category filter
-document.getElementById('categoryFilters').addEventListener('click', e => {
-  const btn = e.target.closest('[data-cat]');
-  if (!btn) return;
-  activeCategory = btn.dataset.cat;
-  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts();
-});
-
-// Contact form
-document.getElementById('contactForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const name = document.getElementById('cf_name').value;
-  const msg = document.getElementById('cf_msg').value;
-  const text = `Halo, saya ${name}.\n\n${msg}`;
-  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
-});
-
-// ── Element SDK ──
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => {
-    const c = config;
-    const d = defaultConfig;
-    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
-    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
-    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
-
-    const font = c.font_family || d.font_family;
-    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
-
-    const size = c.font_size || d.font_size;
-    document.body.style.fontSize = size + 'px';
-  },
-  mapToCapabilities: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return {
-      recolorables: [
-        { get: () => c.background_color || d.background_color, set: v => { c.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => c.font_family || d.font_family,
-        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-      },
-      fontSizeable: {
-        get: () => c.font_size || d.font_size,
-        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-      }
-    };
-  },
-  mapToEditPanelValues: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return new Map([
-      ['store_name', c.store_name || d.store_name],
-      ['hero_headline', c.hero_headline || d.hero_headline],
-      ['hero_subtext', c.hero_subtext || d.hero_subtext],
-      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
-      ['store_address', c.store_address || d.store_address],
-    ]);
-  }
-});
-
-// Init
-renderProducts();
-lucide.createIcons();
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html><!doctype html>
-<html lang="id" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NetGear Tech — Instalasi Jaringan &amp; Perangkat Komputer</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            mono: ['Space Mono', 'monospace'],
-            body: ['Plus Jakarta Sans', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    html, body { height: 100%; margin: 0; }
-    .app-root { height: 100%; overflow: auto; }
-    .grid-bg {
-      background-image:
-        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-    .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,255,136,0.15); }
-    .fade-in { animation: fadeUp 0.6s ease both; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-    .stagger-6 { animation-delay: 0.6s; }
-    .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
-      50% { box-shadow: 0 0 40px rgba(0,255,136,0.4); }
-    }
-    .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-    .badge-new {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
-    }
-    .category-chip { transition: all 0.25s; cursor: pointer; }
-    .category-chip.active, .category-chip:hover { background: #00ff88; color: #0a0f0d; }
-    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .qty-btn:hover { background: rgba(0,255,136,0.2); }
-    .cart-badge {
-      position: absolute; top: -6px; right: -6px;
-      background: #00ff88; color: #0a0f0d; font-size: 10px; font-weight: 800;
-      min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
-      border-radius: 999px;
-    }
-    .toast-msg {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: #00ff88; color: #0a0f0d; padding: 10px 24px; border-radius: 999px;
-      font-weight: 700; font-size: 14px; z-index: 9999; opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-    }
-    .toast-msg.show { opacity: 1; }
-    .cart-panel {
-      position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100%;
-      background: #111916; z-index: 100; transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
-    }
-    .cart-panel.open { transform: translateX(0); }
-    .cart-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    }
-    .cart-overlay.open { opacity: 1; pointer-events: auto; }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div class="app-root bg-[#0a0f0d] text-[#e8efe9] font-body grid-bg" id="appRoot">
-   <!-- Toast -->
-   <div class="toast-msg" id="toast">
-    ✓ Ditambahkan ke keranjang
-   </div><!-- Cart Overlay -->
-   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div><!-- Cart Panel -->
-   <div class="cart-panel" id="cartPanel">
-    <div class="flex flex-col h-full">
-     <div class="flex items-center justify-between p-6 border-b border-[#1e2b24]">
-      <h3 class="font-mono font-bold text-lg text-[#00ff88]">🛒 Keranjang</h3><button onclick="toggleCart()" class="text-[#7a8f80] hover:text-[#e8efe9] transition"><i data-lucide="x" style="width:24px;height:24px"></i></button>
-     </div>
-     <div class="flex-1 overflow-auto p-6" id="cartItems">
-      <p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>
-     </div>
-     <div class="p-6 border-t border-[#1e2b24]">
-      <div class="flex justify-between mb-4">
-       <span class="text-[#7a8f80]">Total</span> <span class="font-mono font-bold text-[#00ff88] text-xl" id="cartTotal">Rp 0</span>
-      </div><a id="checkoutBtn" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#00ff88] text-[#0a0f0d] font-bold text-center py-3 rounded-xl hover:brightness-110 transition"> <i data-lucide="message-circle" style="width:16px;height:16px;display:inline;vertical-align:-2px"></i> Checkout via WhatsApp </a>
-     </div>
-    </div>
-   </div><!-- Navbar -->
-   <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-[#0a0f0d]/80 border-b border-[#1e2b24]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-     <a href="#hero" class="flex items-center gap-2">
-      <div class="w-9 h-9 rounded-lg bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:20px;height:20px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-lg tracking-tight" id="navBrand">NetGear Tech</span> </a>
-     <div class="hidden md:flex items-center gap-8 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" class="hover:text-[#00ff88] transition">Produk</a> <a href="#layanan" class="hover:text-[#00ff88] transition">Layanan</a> <a href="#kenapa" class="hover:text-[#00ff88] transition">Keunggulan</a> <a href="#kontak" class="hover:text-[#00ff88] transition">Kontak</a>
-     </div>
-     <div class="flex items-center gap-3">
-      <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-[#1e2b24] transition" aria-label="Keranjang"> <i data-lucide="shopping-cart" style="width:20px;height:20px"></i> <span class="cart-badge hidden" id="cartBadge">0</span> </button> <button class="md:hidden p-2 rounded-lg hover:bg-[#1e2b24] transition" onclick="toggleMobileMenu()" aria-label="Menu"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
-     </div>
-    </div><!-- Mobile Menu -->
-    <div class="hidden md:hidden border-t border-[#1e2b24]" id="mobileMenu">
-     <div class="px-6 py-4 flex flex-col gap-3 text-sm font-medium text-[#7a8f80]">
-      <a href="#produk" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Produk</a> <a href="#layanan" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Layanan</a> <a href="#kenapa" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Keunggulan</a> <a href="#kontak" onclick="closeMobile()" class="py-2 hover:text-[#00ff88]">Kontak</a>
-     </div>
-    </div>
-   </nav><!-- Hero -->
-   <section id="hero" class="relative pt-28 pb-20 sm:pt-36 sm:pb-28 px-4 sm:px-6 overflow-hidden">
-    <div class="absolute top-20 right-0 w-[400px] h-[400px] bg-[#00ff88] opacity-[0.06] rounded-full blur-[120px]"></div>
-    <div class="max-w-7xl mx-auto relative">
-     <div class="max-w-3xl">
-      <div class="inline-flex items-center gap-2 bg-[#00ff88]/10 text-[#00ff88] text-xs font-mono font-bold px-4 py-2 rounded-full mb-6 fade-in">
-       <span class="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></span> TOKO ONLINE — SIAP KIRIM SELURUH INDONESIA
-      </div>
-      <h1 class="font-mono font-bold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6 fade-in stagger-1" id="heroHeadline">Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span></h1>
-      <p class="text-[#7a8f80] text-base sm:text-lg leading-relaxed max-w-xl mb-8 fade-in stagger-2" id="heroSubtext">Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.</p>
-      <div class="flex flex-wrap gap-4 fade-in stagger-3">
-       <a href="#produk" class="bg-[#00ff88] text-[#0a0f0d] font-bold px-8 py-3.5 rounded-xl hover:brightness-110 transition flex items-center gap-2"> <i data-lucide="shopping-bag" style="width:18px;height:18px"></i> Lihat Produk </a> <a href="#kontak" class="border border-[#1e2b24] text-[#e8efe9] font-bold px-8 py-3.5 rounded-xl hover:border-[#00ff88] hover:text-[#00ff88] transition flex items-center gap-2"> <i data-lucide="phone" style="width:18px;height:18px"></i> Hubungi Kami </a>
-      </div>
-     </div><!-- Stats -->
-     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 fade-in stagger-4">
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        500+
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Produk Tersedia
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        2.8K
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Pelanggan Puas
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        24/7
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Support Online
-       </div>
-      </div>
-      <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl p-5 text-center">
-       <div class="font-mono font-bold text-2xl text-[#00ff88]">
-        ⭐ 4.9
-       </div>
-       <div class="text-[#7a8f80] text-xs mt-1">
-        Rating Toko
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Brand Marquee -->
-   <div class="border-y border-[#1e2b24] py-4 overflow-hidden">
-    <div class="marquee-track text-[#7a8f80]/40 font-mono font-bold text-sm uppercase tracking-widest">
-     <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span> <span>Mikrotik</span><span>•</span><span>Cisco</span><span>•</span><span>TP-Link</span><span>•</span><span>Ubiquiti</span><span>•</span><span>Belden</span><span>•</span><span>AMP</span><span>•</span><span>Hikvision</span><span>•</span><span>D-Link</span><span>•</span><span>Ruijie</span><span>•</span><span>Panduit</span>
-    </div>
-   </div><!-- Products -->
-   <section id="produk" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Katalog Produk</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Perangkat Jaringan &amp; Komputer</h2>
-     </div><!-- Category Filter -->
-     <div class="flex flex-wrap justify-center gap-2 mb-10" id="categoryFilters">
-      <button class="category-chip active font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="all">Semua</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="kabel">Kabel &amp; Konektor</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="aktif">Perangkat Aktif</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="tools">Tools &amp; Aksesoris</button> <button class="category-chip font-mono text-xs font-bold px-4 py-2 rounded-full border border-[#1e2b24] text-[#7a8f80]" data-cat="komputer">Komputer</button>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productGrid"></div>
-    </div>
-   </section><!-- Services -->
-   <section id="layanan" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Layanan Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Jasa Instalasi Profesional</h2>
-     </div>
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="network" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Instalasi Jaringan LAN</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Pemasangan jaringan LAN untuk kantor, sekolah, dan gedung. Termasuk penarikan kabel, crimping, dan konfigurasi.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 500.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="wifi" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Setup WiFi &amp; Hotspot</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Konfigurasi access point, hotspot Mikrotik, dan manajemen bandwidth untuk area publik maupun privat.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 350.000
-       </div>
-      </div>
-      <div class="bg-[#0a0f0d] border border-[#1e2b24] rounded-2xl p-8 card-hover">
-       <div class="w-14 h-14 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mb-5">
-        <i data-lucide="monitor" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h3 class="font-mono font-bold text-lg mb-3">Rakit &amp; Service PC</h3>
-       <p class="text-[#7a8f80] text-sm leading-relaxed">Jasa rakit PC custom, upgrade hardware, instal OS, dan troubleshooting komputer/laptop.</p>
-       <div class="mt-5 font-mono text-[#00ff88] text-sm font-bold">
-        Mulai Rp 200.000
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Why Us -->
-   <section id="kenapa" class="py-20 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Kenapa Kami?</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Keunggulan NetGear Tech</h2>
-     </div>
-     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="shield-check" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Garansi Resmi</h4>
-       <p class="text-[#7a8f80] text-sm">Semua produk bergaransi resmi dari distributor.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="truck" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Kirim Cepat</h4>
-       <p class="text-[#7a8f80] text-sm">Pengiriman same-day untuk area Jabodetabek.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="headphones" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Konsultasi Gratis</h4>
-       <p class="text-[#7a8f80] text-sm">Tim teknisi siap bantu konsultasi kebutuhan Anda.</p>
-      </div>
-      <div class="text-center p-6">
-       <div class="w-16 h-16 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center mx-auto mb-4 pulse-glow">
-        <i data-lucide="badge-percent" style="width:28px;height:28px;color:#00ff88"></i>
-       </div>
-       <h4 class="font-mono font-bold mb-2">Harga Grosir</h4>
-       <p class="text-[#7a8f80] text-sm">Diskon khusus untuk pembelian partai besar.</p>
-      </div>
-     </div>
-    </div>
-   </section><!-- Contact -->
-   <section id="kontak" class="py-20 px-4 sm:px-6 bg-[#111916]/50">
-    <div class="max-w-7xl mx-auto">
-     <div class="text-center mb-12">
-      <span class="font-mono text-[#00ff88] text-xs font-bold tracking-widest uppercase">// Hubungi Kami</span>
-      <h2 class="font-mono font-bold text-2xl sm:text-4xl mt-3">Ada Pertanyaan?</h2>
-     </div>
-     <div class="max-w-lg mx-auto">
-      <form id="contactForm" class="space-y-4">
-       <div>
-        <label for="cf_name" class="block text-sm font-medium text-[#7a8f80] mb-1">Nama</label> <input type="text" id="cf_name" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition" placeholder="Nama lengkap">
-       </div>
-       <div>
-        <label for="cf_msg" class="block text-sm font-medium text-[#7a8f80] mb-1">Pesan</label> <textarea id="cf_msg" rows="4" required class="w-full bg-[#0a0f0d] border border-[#1e2b24] rounded-xl px-4 py-3 text-[#e8efe9] focus:outline-none focus:border-[#00ff88] transition resize-none" placeholder="Tulis pesan Anda..."></textarea>
-       </div><button type="submit" class="w-full bg-[#00ff88] text-[#0a0f0d] font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2"> <i data-lucide="send" style="width:16px;height:16px"></i> Kirim via WhatsApp </button>
-      </form>
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#7a8f80]">
-       <div class="flex items-center gap-2"><i data-lucide="map-pin" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerAddress">Jl. Teknologi No. 42, Jakarta</span>
-       </div>
-       <div class="flex items-center gap-2"><i data-lucide="phone" style="width:16px;height:16px;color:#00ff88"></i> <span id="footerPhone">0812-3456-7890</span>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- Footer -->
-   <footer class="border-t border-[#1e2b24] py-8 px-4 sm:px-6">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#7a8f80]">
-     <div class="flex items-center gap-2">
-      <div class="w-6 h-6 rounded bg-[#00ff88] flex items-center justify-center">
-       <i data-lucide="wifi" style="width:14px;height:14px;color:#0a0f0d"></i>
-      </div><span class="font-mono font-bold text-[#e8efe9]" id="footerBrand">NetGear Tech</span>
-     </div><span>© 2025 — Semua hak dilindungi.</span>
-    </div>
-   </footer>
   </div>
-  <script>
-// ── Product Data ──
-const products = [
-  { id:1, name:"Kabel UTP Cat6 Belden", cat:"kabel", price:3500, unit:"/meter", emoji:"🔌", isNew:false, desc:"Original, 1 roll = 305m" },
-  { id:2, name:"Konektor RJ45 Cat6 (50pcs)", cat:"kabel", price:85000, unit:"", emoji:"🔗", isNew:false, desc:"Gold plated, pass-through" },
-  { id:3, name:"Mikrotik RB750Gr3", cat:"aktif", price:985000, unit:"", emoji:"📡", isNew:true, desc:"5 Port Gigabit Router" },
-  { id:4, name:"TP-Link TL-SG108 Switch 8 Port", cat:"aktif", price:345000, unit:"", emoji:"🖧", isNew:false, desc:"Gigabit Desktop Switch" },
-  { id:5, name:"Crimping Tool RJ45", cat:"tools", price:125000, unit:"", emoji:"🔧", isNew:false, desc:"Heavy duty, 3-in-1" },
-  { id:6, name:"LAN Tester RJ45/RJ11", cat:"tools", price:65000, unit:"", emoji:"📊", isNew:false, desc:"Auto-scan, LED indicator" },
-  { id:7, name:"Ubiquiti UniFi AP AC Lite", cat:"aktif", price:1250000, unit:"", emoji:"📶", isNew:true, desc:"Dual-Band Access Point" },
-  { id:8, name:"SSD NVMe 512GB", cat:"komputer", price:625000, unit:"", emoji:"💾", isNew:false, desc:"M.2 2280, Read 3500MB/s" },
-  { id:9, name:"RAM DDR4 16GB 3200MHz", cat:"komputer", price:485000, unit:"", emoji:"🧠", isNew:true, desc:"DIMM, CL16" },
-  { id:10, name:"Patch Panel 24 Port Cat6", cat:"kabel", price:385000, unit:"", emoji:"🗄️", isNew:false, desc:"Keystone, 1U Rack Mount" },
-  { id:11, name:"Fiber Optik Patch Cord SC-SC", cat:"kabel", price:45000, unit:"/pcs", emoji:"🌐", isNew:false, desc:"Singlemode, 3 meter" },
-  { id:12, name:"Tang Crimping Fiber Optik", cat:"tools", price:1850000, unit:"", emoji:"⚙️", isNew:false, desc:"Precision fusion splicer kit" },
-];
+  <!-- Produk 5 -->
+<div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+  <img src="data:image/jpeg;base64,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"
+       class="w-full h-40 object-cover rounded-lg mb-3">
+  <h3 class="font-semibold">Charger HP Fast Charging</h3>
+  <p class="text-gray-400 text-sm">
+    ⚡ Charger fast charging 20W/33W, kompatibel Android & iPhone.
+    Aman & stabil untuk pengisian cepat.
+  </p>
+  <div class="flex justify-between mt-3">
+    <span class="text-neon font-bold">Rp 85.000</span>
+    <a href="https://wa.me/62881011880391"
+       class="bg-neon text-black px-3 py-1 rounded inline-block">
+       Beli
+    </a>
+  </div>
+</div>
 
-let cart = [];
-let activeCategory = 'all';
+<!-- Produk 6 -->
+<div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+  <img src="data:image/jpeg;base64,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"
+       class="w-full h-40 object-cover rounded-lg mb-3">
+  <h3 class="font-semibold">Kabel LAN (harga per meter)</h3>
+  <p class="text-gray-400 text-sm">
+    🌐 Kabel LAN Cat6 kecepatan tinggi hingga 1Gbps.
+    Cocok untuk internet stabil & gaming.
+  </p>
+  <div class="flex justify-between mt-3">
+    <span class="text-neon font-bold">Rp6.000</span>
+    <a href="https://wa.me/62881011880391"
+       class="bg-neon text-black px-3 py-1 rounded inline-block">
+       Beli
+    </a>
+  </div>
+</div>
 
-const defaultConfig = {
-  store_name: 'okashop',
-  hero_headline: 'Solusi <span class="text-[#00ff88]">Jaringan</span> &amp; Perangkat <span class="text-[#00ff88]">Komputer</span>',
-  hero_subtext: 'Peralatan instalasi jaringan terlengkap dengan harga kompetitif. Dari kabel UTP, switch, router, hingga server rack — semua tersedia.',
-  whatsapp_number: '6281234567890',
-  store_address: 'Jl. Teknologi No. 42, Jakarta',
-  background_color: '#0a0f0d',
-  surface_color: '#111916',
-  text_color: '#e8efe9',
-  primary_action_color: '#00ff88',
-  secondary_action_color: '#7a8f80',
-  font_family: 'Plus Jakarta Sans',
-  font_size: 16
-};
+<!-- Produk 7 -->
+<div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+  <img src="data:image/jpeg;base64,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"
+       class="w-full h-40 object-cover rounded-lg mb-3">
+  <h3 class="font-semibold">Keyboard USB Gaming</h3>
+  <p class="text-gray-400 text-sm">
+    ⌨️ Keyboard USB dengan lampu LED RGB.
+    Nyaman untuk kerja & gaming.
+  </p>
+  <div class="flex justify-between mt-3">
+    <span class="text-neon font-bold">Rp 200.000</span>
+    <a href="https://wa.me/62881011880391"
+       class="bg-neon text-black px-3 py-1 rounded inline-block">
+       Beli
+    </a>
+  </div>
+</div>
 
-function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+<!-- Produk 8 -->
+<div class="bg-black p-4 rounded-xl border border-gray-800 hover:scale-105 transition">
+  <img src="https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS6MdSfo-hwEgmht8g6_8EJiSwWDSk4NuiWCG-8QKOCoPmYjflVVLckfWx-OABRM16nGBHZt4VRkM0WN-2Nj9qRQMCd1RL61Z8Iub0GkgrHT3BBM3q-FrtyrNqqaEKdnvIH6VyPk8qdxw&usqp=CAc"
+       class="w-full h-40 object-cover rounded-lg mb-3">
+  <h3 class="font-semibold">Smart Switch BARDI</h3>
+  <p class="text-gray-400 text-sm">
+    💡 Saklar pintar BARDI, bisa dikontrol via aplikasi & voice control.
+    Cocok untuk smart home.
+  </p>
+  <div class="flex justify-between mt-3">
+    <span class="text-neon font-bold">Rp 170.000</span>
+    <a href="https://wa.me/62881011880391"
+       class="bg-neon text-black px-3 py-1 rounded inline-block">
+       Beli
+    </a>
+  </div>
+</div>
+</section>
 
-function renderProducts() {
-  const grid = document.getElementById('productGrid');
-  const filtered = activeCategory === 'all' ? products : products.filter(p => p.cat === activeCategory);
-  grid.innerHTML = filtered.map((p, i) => `
-    <div class="bg-[#111916] border border-[#1e2b24] rounded-2xl overflow-hidden card-hover fade-in stagger-${(i%6)+1}" data-pid="${p.id}">
-      <div class="relative h-40 bg-[#0a0f0d] flex items-center justify-center text-5xl">
-        ${p.emoji}
-        ${p.isNew ? '<span class="badge-new">Baru</span>' : ''}
-      </div>
-      <div class="p-5">
-        <span class="text-[10px] font-mono text-[#7a8f80] uppercase tracking-wider">${p.cat}</span>
-        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${p.name}</h3>
-        <p class="text-[#7a8f80] text-xs mb-3">${p.desc}</p>
-        <div class="flex items-center justify-between">
-          <span class="font-mono font-bold text-[#00ff88]">${fmt(p.price)}<span class="text-[10px] text-[#7a8f80]">${p.unit}</span></span>
-          <button onclick="addToCart(${p.id})" class="bg-[#00ff88] text-[#0a0f0d] text-xs font-bold px-3 py-1.5 rounded-lg hover:brightness-110 transition flex items-center gap-1">
-            <i data-lucide="plus" style="width:12px;height:12px"></i> Keranjang
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  lucide.createIcons();
-}
+<!-- KONTAK -->
+ 
+<section id="kontak" class="py-16 text-center">
+  <h2 class="text-3xl font-bold mb-6">Kontak</h2>
+  <p class="text-gray-400">WhatsApp: +62 881-0118-80391</p>
+  <p class="text-gray-400">Email: ocapratama3@gmail.com</p>
+  <p class="text-gray-400">Tabanan, Bali</p>
+  
+  <p class="text-neon font-semibold mt-3">
+  TERIMAKASIH TELAH MENGUNJUNGI WEBSITE SAYA, JIKA ADA PERTANYAAN ATAU KENDALA JANGAN RAGU UNTUK MENGHUBUNGI KAMI
+</p>
+</section>
 
-function addToCart(pid) {
-  const existing = cart.find(c => c.id === pid);
-  if (existing) { existing.qty++; } else { cart.push({ id: pid, qty: 1 }); }
-  updateCartUI();
-  showToast();
-}
+<!-- FOOTER -->
+<footer class="text-center py-6 border-t border-gray-800 text-gray-500">
+  © 2025 OkaShop Tech
+</footer>
 
-function updateCartUI() {
-  const badge = document.getElementById('cartBadge');
-  const totalItems = cart.reduce((s, c) => s + c.qty, 0);
-  if (totalItems > 0) { badge.classList.remove('hidden'); badge.textContent = totalItems; }
-  else { badge.classList.add('hidden'); }
-
-  const container = document.getElementById('cartItems');
-  if (cart.length === 0) {
-    container.innerHTML = '<p class="text-[#7a8f80] text-center mt-12">Keranjang kosong</p>';
-  } else {
-    container.innerHTML = cart.map(c => {
-      const p = products.find(x => x.id === c.id);
-      return `<div class="flex items-center gap-4 mb-4 pb-4 border-b border-[#1e2b24]">
-        <div class="w-12 h-12 bg-[#0a0f0d] rounded-xl flex items-center justify-center text-2xl flex-shrink-0">${p.emoji}</div>
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-bold truncate">${p.name}</div>
-          <div class="font-mono text-[#00ff88] text-sm">${fmt(p.price * c.qty)}</div>
-        </div>
-        <div class="flex items-center gap-1">
-          <button onclick="changeQty(${p.id},-1)" class="qty-btn text-[#7a8f80]">−</button>
-          <span class="font-mono text-sm w-6 text-center">${c.qty}</span>
-          <button onclick="changeQty(${p.id},1)" class="qty-btn text-[#7a8f80]">+</button>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  document.getElementById('cartTotal').textContent = fmt(total);
-  updateCheckoutLink();
-}
-
-function changeQty(pid, delta) {
-  const item = cart.find(c => c.id === pid);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(c => c.id !== pid);
-  updateCartUI();
-}
-
-function toggleCart() {
-  document.getElementById('cartPanel').classList.toggle('open');
-  document.getElementById('cartOverlay').classList.toggle('open');
-  lucide.createIcons();
-}
-
-function showToast() {
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1500);
-}
-
-function getWaNumber() {
-  const cfg = window.elementSdk?.config;
-  return (cfg?.whatsapp_number || defaultConfig.whatsapp_number).replace(/\D/g, '');
-}
-
-function updateCheckoutLink() {
-  if (cart.length === 0) return;
-  let msg = '🛒 *Order dari NetGear Tech*\n\n';
-  cart.forEach(c => {
-    const p = products.find(x => x.id === c.id);
-    msg += `• ${p.name} x${c.qty} = ${fmt(p.price * c.qty)}\n`;
-  });
-  const total = cart.reduce((s, c) => { const p = products.find(x => x.id === c.id); return s + p.price * c.qty; }, 0);
-  msg += `\n*Total: ${fmt(total)}*\n\nMohon diproses 🙏`;
-  document.getElementById('checkoutBtn').href = `https://wa.me/${getWaNumber()}?text=${encodeURIComponent(msg)}`;
-}
-
-function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
-function closeMobile() { document.getElementById('mobileMenu').classList.add('hidden'); }
-
-// Category filter
-document.getElementById('categoryFilters').addEventListener('click', e => {
-  const btn = e.target.closest('[data-cat]');
-  if (!btn) return;
-  activeCategory = btn.dataset.cat;
-  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts();
-});
-
-// Contact form
-document.getElementById('contactForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const name = document.getElementById('cf_name').value;
-  const msg = document.getElementById('cf_msg').value;
-  const text = `Halo, saya ${name}.\n\n${msg}`;
-  window.open(`https://wa.me/${getWaNumber()}?text=${encodeURIComponent(text)}`, '_blank');
-});
-
-// ── Element SDK ──
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => {
-    const c = config;
-    const d = defaultConfig;
-    document.getElementById('navBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('footerBrand').textContent = c.store_name || d.store_name;
-    document.getElementById('heroHeadline').innerHTML = c.hero_headline || d.hero_headline;
-    document.getElementById('heroSubtext').textContent = c.hero_subtext || d.hero_subtext;
-    document.getElementById('footerAddress').textContent = c.store_address || d.store_address;
-
-    const font = c.font_family || d.font_family;
-    document.body.style.fontFamily = `${font}, Plus Jakarta Sans, sans-serif`;
-
-    const size = c.font_size || d.font_size;
-    document.body.style.fontSize = size + 'px';
-  },
-  mapToCapabilities: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return {
-      recolorables: [
-        { get: () => c.background_color || d.background_color, set: v => { c.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => c.font_family || d.font_family,
-        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-      },
-      fontSizeable: {
-        get: () => c.font_size || d.font_size,
-        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-      }
-    };
-  },
-  mapToEditPanelValues: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return new Map([
-      ['store_name', c.store_name || d.store_name],
-      ['hero_headline', c.hero_headline || d.hero_headline],
-      ['hero_subtext', c.hero_subtext || d.hero_subtext],
-      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
-      ['store_address', c.store_address || d.store_address],
-    ]);
-  }
-});
-
-// Init
-renderProducts();
-lucide.createIcons();
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-        { get: () => c.surface_color || d.surface_color, set: v => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-        { get: () => c.text_color || d.text_color, set: v => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-        { get: () => c.primary_action_color || d.primary_action_color, set: v => { c.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-        { get: () => c.secondary_action_color || d.secondary_action_color, set: v => { c.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => c.font_family || d.font_family,
-        set: v => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-      },
-      fontSizeable: {
-        get: () => c.font_size || d.font_size,
-        set: v => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-      }
-    };
-  },
-  mapToEditPanelValues: (config) => {
-    const c = config;
-    const d = defaultConfig;
-    return new Map([
-      ['store_name', c.store_name || d.store_name],
-      ['hero_headline', c.hero_headline || d.hero_headline],
-      ['hero_subtext', c.hero_subtext || d.hero_subtext],
-      ['whatsapp_number', c.whatsapp_number || d.whatsapp_number],
-      ['store_address', c.store_address || d.store_address],
-    ]);
-  }
-});
-
-// Init
-renderProducts();
-lucide.createIcons();
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e96f40d1241be7b',t:'MTc3NTcxMDg4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
