@@ -286,14 +286,18 @@ Casing: Airflow bagus + 3 fan
 </footer>
 <!-- Deskripsi Produk -->
 <div id="productDetail" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50">
-  <div class="bg-gray-900 p-6 rounded w-96 max-h-[80vh] overflow-y-auto">
-    <img id="detailImage" class="w-full h-48 object-cover rounded mb-3" src="" alt="Gambar Produk">
-    <h2 id="detailTitle" class="text-xl font-bold mb-2"></h2>
-    <p id="detailDesc" class="text-gray-400 mb-4"></p>
-    <button onclick="closeDetail()" class="bg-neon text-black px-3 py-1 rounded">Tutup</button>
+  <div class="bg-gray-900 p-6 rounded w-96 max-h-[90vh] overflow-y-auto">
+    <div class="relative">
+      <img id="detailImage" class="w-full h-64 object-contain bg-black rounded mb-3" src="" alt="Gambar Produk">
+      <button id="prevImage" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full hover:bg-opacity-75">❮</button>
+      <button id="nextImage" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full hover:bg-opacity-75">❯</button>
+      <div id="imageIndicators" class="flex justify-center gap-2 mt-2"></div>
+    </div>
+    <h2 id="detailTitle" class="text-xl font-bold mb-2 mt-3"></h2>
+    <p id="detailDesc" class="text-gray-400 mb-4 overflow-y-auto max-h-48"></p>
+    <button onclick="closeDetail()" class="bg-neon text-black px-3 py-1 rounded w-full">Tutup</button>
   </div>
 </div>
-
 <script src="script.js"></script>
 
 
